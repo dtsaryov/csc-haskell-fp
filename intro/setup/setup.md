@@ -1,16 +1,18 @@
-# The Haskell Language - Quick Reference
+# 1.1 Setup
+
+## The Haskell Language - Quick Reference
 
 Language Haskell is a pure functional programming language with lazy execution
 semantic and polymorphic static typing. The language is named after
 the American logician and mathematician Haskell Brooks Curry.
 
-## Resources:
+## Resources
 
 - [haskell.org](https://www.haskell.org/) - Haskell "home page"
 - [Hoogle](https://www.haskell.org/hoogle/) - Haskell "Google"
 - [Haskell 2010](https://www.haskell.org/onlinereport/haskell2010/) - current lang standard
 
-# Basic Haskell Dev Environment
+## Basic Haskell Dev Environment
 
 Few tools from the Haskell Platform will be used:
 
@@ -19,7 +21,7 @@ Few tools from the Haskell Platform will be used:
 
 Source files are text files with the `*.hs` extension.
 
-## Haskell Interpreter Usage
+## Haskell Interpreter
 
 ```
 > ghci
