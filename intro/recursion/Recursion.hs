@@ -32,13 +32,6 @@ fibonacciNeg n | n == 0 = 0
                | n > 0  = fibonacciNeg (n - 1) + fibonacciNeg (n - 2)
 
 -- fibonacci seq with negative numbers and accumulator
-fibAcc n | n >= 0 = fibHelper 0 1 n
-         | n < 0  = (-1) ^ (abs n + 1) * fibAcc (abs n)
-
-fibHelper n1 n2 n | n == 0    = 0
-                  | n == 1    = n2
-                  | otherwise = fibHelper n2 (n1 + n2) (n - 1)
-
 fibonacciAcc n = fibOpt 0 1 n
 fibOpt n1 n2 n | n == 0    = 0
                | n == 1    = n2
