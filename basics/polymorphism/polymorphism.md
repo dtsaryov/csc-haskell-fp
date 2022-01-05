@@ -183,3 +183,89 @@ with anonymous function:
 ```haskell
 sumFstFst = (+) `on` \pp -> fst (fst pp)
 ```
+
+## Composition
+
+```haskell
+f :: b -> c
+g :: a -> b
+
+compose :: (b -> c) -> (a -> b) -> a -> c 
+compose f g = \x -> f (g x)
+```
+
+Built-in composition operator is `.`:
+
+```
+GHCi> :t (.)
+(.) :: (b -> c) -> (a -> b) -> a -> c
+```
+
+The previous function that returns a sum of first elements of first pair in pair
+(`(1, True) sumFst (2, False)`) can be refactored in the following way:
+
+```haskell
+sumFst = (+) `on` (fst . fst)
+```
+
+## Data Structures Polymorphism
+
+Lists and tuples are polymorphic:
+
+```
+GHCi> :t []
+[] :: [a]
+
+GHCi> :t (++)
+(++) :: [a] -> [a] -> [a]
+
+GHCi> :t (,)
+(,) :: a -> b -> (a, b)
+
+GHCi> :t fst
+fst :: (a, b) -> a
+```
+
+`(,)` is a prefix syntax of tuple creation:
+
+```haskell
+pair = (,) 42 True
+
+triple = (,,) 42 True "Answer"
+```
+
+## Currying
+
+Currying is the technique of converting a function that takes multiple arguments
+into a sequence of functions that each takes a single argument ([wiki](https://en.wikipedia.org/wiki/Currying)).
+
+### `curry`
+
+We can curry the `fst` function with the corresponding function `curry`:
+
+```
+GHCi> :type fst
+fst :: (a, b) -> a
+
+GHCi> :type curry fst
+curry fst :: c -> b -> c 
+```
+
+In this example the `curry` function can be implemented like this:
+
+```haskell
+curry f x y = f (x, y)
+```
+
+### `uncurry`
+
+```
+GHCi> :t uncurry
+uncurry :: (a -> b -> c) -> (a, b) -> c
+```
+
+```haskell
+unc x y = x + y
+
+sumOfPair = uncurry unc (1, 2) -- result: 3
+```
