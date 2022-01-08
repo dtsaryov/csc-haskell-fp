@@ -78,3 +78,10 @@ Recursive implementation of the `++` operator:
 [] ++ ys = ys
 (x : xs) ++ ys = x : xs ++ ys
 ```
+
+## Useful Functions
+
+1. `take n xs` - returns first `n` elements from `xs`
+2. `drop n xs` - return all remaining elements of `xs` after the first `n` elements
+3. `splitAt n xs` - divides `xs` after n-th element
+4. `xs !! n` - returns n-th element from `xs`

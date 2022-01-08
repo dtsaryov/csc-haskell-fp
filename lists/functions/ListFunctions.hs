@@ -49,3 +49,41 @@ GHCi> isPalindrome [1, 2]
 False
 -}
 isPalindrome xs = reverse xs == xs
+
+{-
+GHCi> sum3 [1,2,3] [4,5] [6]
+[11,7,3]
+-}
+sum3 :: Num a => [a] -> [a] -> [a] -> [a]
+sum3 xs ys zs = sum' [] xs ys zs where
+  sum' acc [] [] [] = reverse acc
+  sum' acc xs' ys' zs' = sum' ((x + y + z) : acc) (stail xs') (stail ys') (stail zs') where
+    stail [] = []
+    stail qs = tail qs
+
+    shead [] = 0
+    shead qs = head qs
+
+    x = shead xs'
+    y = shead ys'
+    z = shead zs'
+
+{-
+GHCi> groupElems []
+[]
+
+GHCi> groupElems [1,2]
+[[1],[2]]
+
+GHCi> groupElems [1,2,2,2,4]
+[[1],[2,2,2],[4]]
+
+GHCi> groupElems [1,2,3,2,4]
+[[1],[2],[3],[2],[4]]
+-}
+groupElems :: Eq a => [a] -> [[a]]
+groupElems xs = group [] xs where
+  group acc [] = reverse acc
+  group acc xs' = group (sameEls : acc) diffEls where
+    head' = head xs'
+    (sameEls, diffEls) = span (== head') xs'
