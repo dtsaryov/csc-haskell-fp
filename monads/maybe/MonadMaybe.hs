@@ -32,3 +32,25 @@ Nothing
 -}
 tokenize :: String -> Maybe [Token]
 tokenize input = sequence $ map asToken $ words input
+
+{-
+a^2 + b^2 = c^2
+0 < a < b
+0 < c <= x
+
+GHCi> pythagoreanTriple 5
+[(3,4,5)]
+
+GHCi> pythagoreanTriple 0
+[]
+
+GHCi> pythagoreanTriple 10
+[(3,4,5),(6,8,10)]
+-}
+pythagoreanTriple :: Int -> [(Int, Int, Int)]
+pythagoreanTriple x = do
+    a <- [1..x]
+    b <- [1..a]
+    c <- [1..x]
+    True <- return (a ^ 2 + b ^ 2 == c ^ 2)
+    return (b, a, c)
