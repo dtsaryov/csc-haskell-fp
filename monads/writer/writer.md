@@ -19,6 +19,9 @@ execWriter m = snd (runWriter m)
 evalWriter :: Writer w a -> a
 evalWriter m = fst (runWriter m)
 
+tell :: Monoid w => w -> Writer w ()
+tell w = writer ((), w)
+
 instance (Monoid w) => Monad (Writer w) where
   return x = Writer (x, mempty)
   m >>= k =
