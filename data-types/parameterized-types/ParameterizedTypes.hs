@@ -1,6 +1,7 @@
 module ParameterizedTypes where
 
-import Data.Char(isDigit)
+import Data.Char
+import Data.List
 
 data Coord a = Coord a a deriving Show
 
@@ -49,13 +50,72 @@ listToMaybe ([]) = Nothing
 
 ------
 
-data Error = ParsingError | IncompleteDataError | IncorrectDataError String
+maybeToBool :: Maybe String -> Bool
+maybeToBool Nothing = False
+maybeToBool _ = True
 
-data Person = Person { firstName :: String, lastName :: String, age :: Int }
+data Error = ParsingError | IncompleteDataError | IncorrectDataError String deriving (Eq, Show)
+
+data Person = Person { firstName :: String, lastName :: String, age :: Int } deriving (Eq, Show)
+
+isPairMalformed :: (String, String) -> Bool
+isPairMalformed (k, v) = length k == 0 || length v == 0
+
+checkPairs :: [(String, String)] -> Either Error [(String, String)]
+checkPairs pairs = if any isPairMalformed pairs then Left ParsingError else Right pairs
+
+trim xs = dropSpaceTail "" $ dropWhile isSpace xs
+
+dropSpaceTail maybeStuff "" = ""
+dropSpaceTail maybeStuff (x:xs)
+        | isSpace x = dropSpaceTail (x:maybeStuff) xs
+        | null maybeStuff = x : dropSpaceTail "" xs
+        | otherwise       = reverse maybeStuff ++ x : dropSpaceTail "" xs
+
+
+stail "" = ""
+stail s = tail s
+
+toPair :: String -> (String, String)
+toPair x = let (k, v) = span (/= '=') x
+           in (trim k, trim $ stail v)
+
+checkComplete :: Either Error [(String, String)] -> Either Error [(String, String)]
+checkComplete (Left e) = Left e
+checkComplete (Right pairs) | all (\key -> maybeToBool $ find (==key) (map fst pairs)) ["firstName", "lastName", "age"] = Right $ pairs
+                            | otherwise = Left IncompleteDataError
+
+parseLines :: [String] -> Either Error [(String, String)]
+parseLines ls = checkAge $ checkComplete $ checkPairs $ map toPair ls
+
+createP :: (Maybe String) ->
+           (Maybe String) ->
+           (Maybe String) ->
+           Either Error Person
+
+createP _ _ _ = Left IncompleteDataError
+createP (Just fn) (Just ln) (Just age) =
+    Right $ Person fn ln (read age :: Int)
+
+createPerson :: Either Error [(String, String)] -> Either Error Person
+createPerson (Left e) = Left e
+createPerson (Right pairs) = createP fn ln age where
+  fn = lookup "firstName" pairs
+  ln = lookup "lastName" pairs
+  age = lookup "age" pairs
+
+assertAge :: Maybe String -> Bool
+assertAge Nothing = False
+assertAge (Just age) = all isDigit age
+
+checkAge :: Either Error [(String, String)] -> Either Error [(String, String)]
+checkAge (Left e) = Left e
+checkAge (Right pairs) = case assertAge $ lookup "age" pairs of True -> Right pairs
+                                                                otherwise -> Left $ IncorrectDataError "age"
 
 -- firstName = John\nlastName = Connor\nage = 30
 parsePerson :: String -> Either Error Person
-parsePerson = undefined
+parsePerson = createPerson . (parseLines . lines)
 
 ------
 
